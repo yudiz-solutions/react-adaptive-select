@@ -1,7 +1,9 @@
 {
   "name": "react-adaptive-select",
   "private": false,
-  "version": "0.0.01",
+  "version": "0.0.02",
+  "description": "A customizable, searchable dropdown select component for React applications. This component is adaptive to screen or parent container size.",
+
   "type": "module",
   "main": "dist/index.umd.js",
   "module": "dist/index.es.js",
@@ -26,6 +28,26 @@
     "prepare": "npm run build",
     "preview": "vite preview"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yudiz-solutions/react-adaptive-select.git"
+  },
+  "keywords": [
+    "react",
+    "dropdown",
+    "select",
+    "searchable",
+    "adaptive",
+    "responsive",
+    "component",
+    "UI",
+    "react-component",
+    "dropdown-select",
+    "searchable-select",
+    "adaptive-select"
+  ],
+  "author": "Sahibe Alam",
+  "license": "MIT",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
