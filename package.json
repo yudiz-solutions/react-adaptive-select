@@ -1,7 +1,7 @@
 {
   "name": "react-adaptive-select",
   "private": false,
-  "version": "0.0.02",
+  "version": "0.0.03",
   "description": "A customizable, searchable dropdown select component for React applications. This component is adaptive to screen or parent container size.",
 
   "type": "module",

@@ -1,5 +1,9 @@
-
-
+*{
+  box-sizing: border-box;
+}
+.selected-option{
+  border: 1px solid #ccc;
+}
 .react-adaptive-dropdown{
     font-family: Arial, Helvetica, sans-serif;
   }
@@ -47,6 +51,7 @@
     background-color: #fff;
   }
   .react-adaptive-dropdown.open-top .container-option{
+    border: 1px solid #ccc;
     display: flex;
     flex-direction: column-reverse;
   }
@@ -75,6 +80,9 @@
   .option-list-wrapper li.selected{
     background-color: black;
     color: white;
+  }
+  .option-list-wrapper li:not(:last-child){
+    border-bottom: 1px solid #ccc;
   }
   .option-list-wrapper{
     list-style: none;
@@ -119,6 +127,7 @@
   .search-bar{
     position: relative;
     padding: 10px;
+    background: #ccc;
     width: 100%;
     
   }
