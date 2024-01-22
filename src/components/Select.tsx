@@ -10,7 +10,7 @@ interface SelectProps {
   placeholder?: string;
   onSearch?: (searchTerm: string) => void;
   options?: { label: string; value: string }[];
-  defaultSelect?: number | { label: string; value: string };
+  defaultSelect?:  { label: string; value: string };
   isSearchFocus?: boolean;
   isSearchable?: boolean;
   onPositionChange?: (position: string) => void;

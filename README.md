@@ -16,6 +16,7 @@ yarn install react-adaptive-select
 ## Usage
 ```javascript
 import { Select } from "react-adaptive-select"
+import 'react-adaptive-select/dist/style.css'
 
 function App() {
   const options =  [
@@ -52,17 +53,17 @@ export default App
 ```
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| parentRef | RefObject<HTMLElement> | null | A ref to the parent element of the dropdown. Used to calculate the position of the dropdown relative to its parent. |
-| onOpen | () => void | null | Callback function when the dropdown is opened. |
-| onClose | () => void | null | Callback function when the dropdown is closed. |
-| onSelect | (option: string \| number) => void | null | Callback function when an option is selected. Receives the selected option as a parameter. |
-| placeholder | string | "Select an option" | Placeholder text for the dropdown. Displayed when no option is selected. |
-| onSearch | (searchTerm: string) => void | null | Callback function when a search is performed. Receives the search term as a parameter. |
-| options | string[] | [] | Array of options for the dropdown. |
-| defaultSelect | number | null | Index of the default selected option. |
-| isSearchFocus | boolean | false | If true, the search input will be focused when the dropdown is opened. |
-| isSearchable | boolean | true | If true, the dropdown will include a search input. |
-| onPositionChange | (position: string) => void | null | Callback function when the dropdown position changes. Receives the new position as a parameter. |
+| parentRef | `React.RefObject<HTMLDivElement>` | null | A reference to the parent element of the dropdown. This is used to calculate the position of the dropdown relative to its parent, allowing for more flexible positioning. |
+| onOpen | `() => void` | null | A callback function that is triggered when the dropdown is opened. This can be used to perform actions like logging, analytics tracking, or state updates. |
+| onClose | `() => void` | null | A callback function that is triggered when the dropdown is closed. This can be used to perform cleanup actions or state updates. |
+| onSelect | `(option: { label: string; value: string }) => void` | null | A callback function that is triggered when an option is selected. It receives the selected option as a parameter, allowing you to use this data in your application. |
+| placeholder | `string` | "Select an option" | The placeholder text for the dropdown. This is displayed when no option is selected, guiding the user to make a selection. |
+| onSearch | `(searchTerm: string) => void` | null | A callback function that is triggered when a search is performed. It receives the search term as a parameter, allowing you to perform custom search logic. |
+| options | `{ label: string; value: string }[]` | [] | An array of options for the dropdown. Each option is an object with a `label` (displayed in the dropdown) and a `value` (used when an option is selected). |
+| defaultSelect | `{ label: string; value: string }` | null | The default selected option. This is the option that is selected when the dropdown is first rendered. |
+| isSearchFocus | `boolean` | false | If true, the search input will be automatically focused when the dropdown is opened. This can improve usability by allowing the user to start typing immediately. |
+| isSearchable | `boolean` | true | If true, the dropdown will include a search input. This allows the user to filter the options by typing, which can be useful for large option lists. |
+| onPositionChange | `(position: string) => void` | null | A callback function that is triggered when the dropdown position changes. It receives the new position as a parameter, allowing you to react to changes in the dropdown's position. |
 
 
 ## License
