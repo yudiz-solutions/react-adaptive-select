@@ -6,11 +6,11 @@ interface SelectProps {
   parentRef?: React.RefObject<HTMLDivElement>;
   onOpen?: () => void;
   onClose?: () => void;
-  onSelect?: (option: string) => void;
+  onSelect?: (option: object) => void;
   placeholder?: string;
   onSearch?: (searchTerm: string) => void;
-  options?: string[];
-  defaultSelect?: number | null;
+  options?: { label: string; value: string }[];
+  defaultSelect?: number | { label: string; value: string };
   isSearchFocus?: boolean;
   isSearchable?: boolean;
   onPositionChange?: (position: string) => void;
@@ -24,16 +24,16 @@ export const Select: React.FC<SelectProps> = ({
   placeholder = 'Select an option',
   onSearch,
   options,
-  defaultSelect = null,
+  defaultSelect,
   isSearchFocus = false,
   isSearchable = true,
   onPositionChange,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<string | undefined>(defaultSelect || defaultSelect == 0 ? options?.[defaultSelect] : undefined);
+  const [selectedOption, setSelectedOption] = useState<{ label: string; value: string }>(defaultSelect as { label: string; value: string });
   const [dropdownPosition, setDropdownPosition] = useState<string>("bottom");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<string[] | undefined>(options);
+  const [searchResults, setSearchResults] = useState<{ label: string; value: string }[] | undefined>(options);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const ref = parentRef || dropdownRef;
@@ -46,7 +46,7 @@ export const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const handleOptionClick = (option: string) => {
+  const handleOptionClick = (option: { label: string; value: string }) => {
     if (isSearchable) {
       setSearchTerm("");
     }
@@ -56,7 +56,6 @@ export const Select: React.FC<SelectProps> = ({
       onSelect(option);
     }
   };
-
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setIsOpen(false);
@@ -79,7 +78,7 @@ export const Select: React.FC<SelectProps> = ({
       const spaceBelow = parentRef
         ? (parentRect?.height ?? 0) - (rect.bottom - (parentRect?.top ?? 0))
         : window.innerHeight - rect.bottom;
-    const spaceAbove = parentRef && parentRect ? rect.top - parentRect.top : rect.top;
+      const spaceAbove = parentRef && parentRect ? rect.top - parentRect.top : rect.top;
       const positionAbove = spaceBelow < dropdownHeight && spaceAbove > dropdownHeight;
       const dropdownMenuElement = dropdownMenu as HTMLElement;
       dropdownMenuElement.style.top = positionAbove ? `-${dropdownHeight}px` : `${(selectedOptionElement as HTMLElement).offsetHeight}px`;
@@ -121,9 +120,8 @@ export const Select: React.FC<SelectProps> = ({
     if (isSearchable) {
       setSearchResults(
         options?.filter((option) =>
-          option.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
+          option.label.toLowerCase().includes(searchTerm.toLowerCase())
+        ));
     }
     if (onSearch) {
       if (isSearchable) {
@@ -137,15 +135,14 @@ export const Select: React.FC<SelectProps> = ({
   }, [searchResults]);
   return (
     <div
-      className={`react-adaptive-dropdown ${
-        isOpen ? `open-${dropdownPosition} dropdown-open` : ""
-      }`}
+      className={`react-adaptive-dropdown ${isOpen ? `open-${dropdownPosition} dropdown-open` : ""
+        }`}
       ref={dropdownRef}
     >
       <div className="selected-option" onClick={toggleDropdown}>
         <span >
-          {selectedOption ? selectedOption : <span className="place-holder">{placeholder}</span>}{" "}
-        </span>{" "}
+          {selectedOption ? selectedOption.label : <span className="place-holder">{placeholder}</span>}{" "}
+        </span>
         <span className="dropdown-arrow">
           <img src={Arrow} alt="" />
         </span>
@@ -175,17 +172,17 @@ export const Select: React.FC<SelectProps> = ({
             >
               <ul className="option-list-wrapper">
                 {searchResults?.length ?? 0 > 0 ? (
-                  searchResults?.map((option) => (
+                  searchResults?.map((option, index) => (
                     <li
-                      key={option}
+                      key={index}
                       onClick={() => handleOptionClick(option)}
-                      className={option === selectedOption ? "selected" : ""}
+                      className={option?.value === selectedOption?.value ? "selected" : ""}
                     >
-                      {option}
+                      {option?.label}
                     </li>
                   ))
                 ) : (
-                  <li>No results found</li>
+                  <li>{options?.length ? "No results found" : "No option"}</li>
                 )}
               </ul>
             </div>
