@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Arrow from "../assets/media/angle-down.svg";
 import '../assets/css/Select.css'
 
@@ -10,7 +10,7 @@ interface SelectProps {
   placeholder?: string;
   onSearch?: (searchTerm: string) => void;
   options?: { label: string; value: string }[];
-  defaultSelect?:  { label: string; value: string };
+  defaultSelect?: { label: string; value: string };
   isSearchFocus?: boolean;
   isSearchable?: boolean;
   onPositionChange?: (position: string) => void;
@@ -36,6 +36,11 @@ export const Select: React.FC<SelectProps> = ({
   const [searchResults, setSearchResults] = useState<{ label: string; value: string }[] | undefined>(options);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const optionRefs = options?.map(() => React.createRef<HTMLLIElement>()) ?? [];
+
+  // Add a new state variable to keep track of the focused option
+  const [focusedOption, setFocusedOption] = useState<number>(-1);
+  console.log(focusedOption, "focusedOption")
   const ref = parentRef || dropdownRef;
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -46,7 +51,7 @@ export const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const handleOptionClick = (option: { label: string; value: string }) => {
+  const handleOptionClick = (option: { label: string; value: string }, index: number) => {
     if (isSearchable) {
       setSearchTerm("");
     }
@@ -55,6 +60,7 @@ export const Select: React.FC<SelectProps> = ({
     if (onSelect) {
       onSelect(option);
     }
+    setFocusedOption(index);
   };
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -63,6 +69,23 @@ export const Select: React.FC<SelectProps> = ({
         setSearchTerm("");
         onClose();
       }
+    }
+  };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setFocusedOption((prevIndex) => {
+        const nextIndex = Math.min(prevIndex + 1, options?.length - 1 ?? 0);
+        optionRefs[nextIndex]?.current?.focus();
+        return nextIndex;
+      });
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setFocusedOption((prevIndex) => {
+        const nextIndex = Math.max(prevIndex - 1, 0);
+        optionRefs[nextIndex]?.current?.focus();
+        return nextIndex;
+      });
     }
   };
 
@@ -107,6 +130,12 @@ export const Select: React.FC<SelectProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      setFocusedOption(options?.findIndex(option => option.value === selectedOption?.value) ?? -1);
+    }
+  }, [isOpen, options, selectedOption]);
+
+  useEffect(() => {
+    if (isOpen) {
       calculateDropdownPosition();
       if (isSearchable) {
         if (isSearchFocus && inputRef.current) {
@@ -135,9 +164,10 @@ export const Select: React.FC<SelectProps> = ({
   }, [searchResults]);
   return (
     <div
-      className={`react-adaptive-dropdown ${isOpen ? `open-${dropdownPosition} dropdown-open` : ""
-        }`}
+      className={`react-adaptive-dropdown ${isOpen ? `open-${dropdownPosition} dropdown-open` : ""}`}
       ref={dropdownRef}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
     >
       <div className="selected-option" onClick={toggleDropdown}>
         <span >
@@ -175,8 +205,10 @@ export const Select: React.FC<SelectProps> = ({
                   searchResults?.map((option, index) => (
                     <li
                       key={index}
-                      onClick={() => handleOptionClick(option)}
+                      onClick={() => handleOptionClick(option, index)}
+                      ref={optionRefs[index]}
                       className={option?.value === selectedOption?.value ? "selected" : ""}
+                      tabIndex={0} // Make the li element focusable
                     >
                       {option?.label}
                     </li>
